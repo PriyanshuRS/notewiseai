@@ -1,5 +1,5 @@
 from typing import List, Dict
-from config.settings import settings
+from backend.config.settings import settings
 
 
 class TextChunker:

@@ -11,8 +11,8 @@ from qdrant_client.models import (
 from typing import List, Dict
 import uuid
 
-from config.settings import settings
-from services.embeddings import embedding_service
+from backend.config.settings import settings
+from backend.services.embeddings import embedding_service
 
 
 COLLECTION_NAME = "pdf_chunks"

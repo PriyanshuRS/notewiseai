@@ -1,5 +1,5 @@
 import httpx
-from config.settings import settings
+from backend.config.settings import settings
 
 
 class OllamaClient:

@@ -1,9 +1,9 @@
 from typing import List
 
-from services.embeddings import embedding_service
-from services.vector_store import vector_store
-from services.ollama_client import ollama_client
-from models.schemas import SourceReference
+from backend.services.embeddings import embedding_service
+from backend.services.vector_store import vector_store
+from backend.services.ollama_client import ollama_client
+from backend.models.schemas import SourceReference
 
 
 class RAGPipeline:

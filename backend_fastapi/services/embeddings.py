@@ -2,7 +2,7 @@ from sentence_transformers import SentenceTransformer
 from typing import List
 import numpy as np
 
-from config.settings import settings
+from backend.config.settings import settings
 
 
 class EmbeddingService:
