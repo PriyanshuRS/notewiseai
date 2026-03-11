@@ -1,9 +1,9 @@
-import uuid
-
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import User
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+import uuid
 
 from .models import Document
 
@@ -14,7 +14,8 @@ from services.vector_store import vector_store
 
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
+@authentication_classes([])
 def upload_pdf(request):
 
     file = request.FILES.get("file")
@@ -33,10 +34,13 @@ def upload_pdf(request):
 
     document_id = str(uuid.uuid4())
 
+    # Handle user - fallback to first user if not authenticated
+    user = request.user if request.user.is_authenticated else User.objects.first()
+
     # Save file first
     doc = Document.objects.create(
         id=document_id,
-        user=request.user,
+        user=user,
         file=file,
         filename=file.name,
         status="processing"
@@ -58,7 +62,7 @@ def upload_pdf(request):
 
     vector_store.insert_chunks(
         document_id=document_id,
-        user_id=request.user.id,
+        user_id=user.id,
         chunks=chunks,
         embeddings=embeddings
     )
@@ -80,7 +84,8 @@ from services.rag_pipeline import rag_pipeline
 
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
+@authentication_classes([])
 def query_document(request):
 
     question = request.data.get("question")
@@ -89,10 +94,12 @@ def query_document(request):
     if not question:
         return Response({"error": "Question required"}, status=400)
 
+    user = request.user if request.user.is_authenticated else User.objects.first()
+
     import asyncio
     result = asyncio.run(rag_pipeline.query(
         question=question,
-        user_id=request.user.id,
+        user_id=user.id,
         document_id=document_id
     ))
 
@@ -100,13 +107,15 @@ def query_document(request):
 
 
 @api_view(["DELETE"])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
+@authentication_classes([])
 def delete_document(request, document_id):
     """
     Delete a document from DB, storage, and vector store.
     """
     try:
-        doc = Document.objects.get(id=document_id, user=request.user)
+        user = request.user if request.user.is_authenticated else User.objects.first()
+        doc = Document.objects.get(id=document_id, user=user)
         
         # 1. Delete from Vector Store (Qdrant)
         vector_store.delete_document(document_id)
@@ -123,3 +132,26 @@ def delete_document(request, document_id):
         return Response({"error": "Document not found"}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+from .models import Document
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+@authentication_classes([])
+def list_documents(request):
+    user = request.user if request.user.is_authenticated else User.objects.first()  
+
+    docs = Document.objects.filter(user=user)
+
+    return Response([
+        {
+            "id": str(d.id),
+            "filename": d.filename,
+            "pages": d.pages,
+            "chunks": d.chunks,
+            "status": d.status
+        }
+        for d in docs
+    ])

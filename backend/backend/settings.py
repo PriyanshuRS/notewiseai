@@ -57,7 +57,12 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4001",
+]
+# For safety, keep this as well if needed for other origins, but CORS_ALLOWED_ORIGINS takes precedence
+CORS_ALLOW_ALL_ORIGINS = False
 
 ROOT_URLCONF = 'backend.urls'
 
