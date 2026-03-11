@@ -1,9 +1,6 @@
-from django.db import models
-
-# Create your models here.
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
-import uuid
 
 
 class Document(models.Model):
@@ -20,13 +17,30 @@ class Document(models.Model):
         related_name="documents"
     )
 
-    filename = models.CharField(max_length=255)
+    file = models.FileField(
+        upload_to="documents/"
+    )
 
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+    filename = models.CharField(
+        max_length=255
+    )
 
-    pages = models.IntegerField(default=0)
+    pages = models.IntegerField(
+        default=0
+    )
 
-    chunks = models.IntegerField(default=0)
+    chunks = models.IntegerField(
+        default=0
+    )
+
+    status = models.CharField(
+        max_length=20,
+        default="processing"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
 
     def __str__(self):
         return self.filename

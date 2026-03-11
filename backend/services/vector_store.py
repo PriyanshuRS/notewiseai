@@ -55,6 +55,7 @@ class VectorStore:
     def insert_chunks(
         self,
         document_id: str,
+        user_id: int,
         chunks: List[Dict],
         embeddings: List[List[float]]
     ):
@@ -68,7 +69,8 @@ class VectorStore:
 
             payload = {
                 "text": chunk["text"],
-                "document_id": document_id,
+                "document_id": str(document_id),
+                "user_id": user_id,
                 "page_number": chunk["page_number"],
                 "chunk_index": chunk["chunk_index"]
             }
@@ -89,24 +91,30 @@ class VectorStore:
     def search(
         self,
         query_vector: List[float],
+        user_id: int,
         document_id: str | None = None,
         top_k: int = 5
     ):
         """
-        Perform semantic search in Qdrant.
+        Perform semantic search in Qdrant restricted to a specific user.
         """
 
-        query_filter = None
+        must_conditions = [
+            FieldCondition(
+                key="user_id",
+                match=MatchValue(value=user_id)
+            )
+        ]
 
         if document_id:
-            query_filter = Filter(
-                must=[
-                    FieldCondition(
-                        key="document_id",
-                        match=MatchValue(value=document_id)
-                    )
-                ]
+            must_conditions.append(
+                FieldCondition(
+                    key="document_id",
+                    match=MatchValue(value=str(document_id))
+                )
             )
+
+        query_filter = Filter(must=must_conditions)
 
         results = self.client.query_points(
             collection_name=COLLECTION_NAME,
@@ -116,6 +124,22 @@ class VectorStore:
         )
 
         return results
+
+    def delete_document(self, document_id: str):
+        """
+        Delete all vectors for a given document_id.
+        """
+        self.client.delete(
+            collection_name=COLLECTION_NAME,
+            points_selector=Filter(
+                must=[
+                    FieldCondition(
+                        key="document_id",
+                        match=MatchValue(value=str(document_id))
+                    )
+                ]
+            )
+        )
 
 
 # Singleton instance

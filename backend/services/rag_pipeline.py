@@ -15,6 +15,7 @@ class RAGPipeline:
     async def query(
         self,
         question: str,
+        user_id: int,
         document_id: str | None = None,
         top_k: int = 5
     ):
@@ -28,6 +29,7 @@ class RAGPipeline:
         # Step 2 — Retrieve chunks
         results = vector_store.search(
             query_vector=query_vector,
+            user_id=user_id,
             document_id=document_id,
             top_k=top_k
         )
