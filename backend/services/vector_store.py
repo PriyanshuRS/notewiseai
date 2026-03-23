@@ -5,13 +5,14 @@ from qdrant_client.models import (
     PointStruct,
     Filter,
     FieldCondition,
-    MatchValue
+    MatchValue,
+    MatchAny
 )
 
 from typing import List, Dict
 import uuid
 
-from config.settings import settings
+from django.conf import settings
 from services.embeddings import embedding_service
 
 
@@ -19,31 +20,19 @@ COLLECTION_NAME = "pdf_chunks"
 
 
 class VectorStore:
-    """
-    Handles all interactions with the Qdrant vector database.
-    """
-
     def __init__(self):
-
-        self.client = QdrantClient(
-            host=settings.QDRANT_HOST,
-            port=settings.QDRANT_PORT
-        )
-
+        import os
+        from django.conf import settings
+        qdrant_path = os.path.join(settings.BASE_DIR, "qdrant_db")
+        self.client = QdrantClient(path=qdrant_path)
         self.dimension = embedding_service.dimension
-
         self._ensure_collection()
 
     def _ensure_collection(self):
-        """
-        Create collection if it does not exist.
-        """
-
         collections = self.client.get_collections().collections
         existing = [c.name for c in collections]
 
         if COLLECTION_NAME not in existing:
-
             self.client.create_collection(
                 collection_name=COLLECTION_NAME,
                 vectors_config=VectorParams(
@@ -52,21 +41,9 @@ class VectorStore:
                 )
             )
 
-    def insert_chunks(
-        self,
-        document_id: str,
-        user_id: int,
-        chunks: List[Dict],
-        embeddings: List[List[float]]
-    ):
-        """
-        Insert chunk embeddings into Qdrant.
-        """
-
+    def insert_chunks(self, document_id: str, user_id: int, chunks: List[Dict], embeddings: List[List[float]]):
         points = []
-
         for chunk, vector in zip(chunks, embeddings):
-
             payload = {
                 "text": chunk["text"],
                 "document_id": str(document_id),
@@ -74,7 +51,6 @@ class VectorStore:
                 "page_number": chunk["page_number"],
                 "chunk_index": chunk["chunk_index"]
             }
-
             points.append(
                 PointStruct(
                     id=str(uuid.uuid4()),
@@ -82,36 +58,16 @@ class VectorStore:
                     payload=payload
                 )
             )
+        self.client.upsert(collection_name=COLLECTION_NAME, points=points)
 
-        self.client.upsert(
-            collection_name=COLLECTION_NAME,
-            points=points
-        )
-
-    def search(
-        self,
-        query_vector: List[float],
-        user_id: int,
-        document_id: str | None = None,
-        top_k: int = 5
-    ):
-        """
-        Perform semantic search in Qdrant restricted to a specific user.
-        """
-
+    def search(self, query_vector: List[float], user_id: int, document_ids: List[str] = None, top_k: int = 5):
         must_conditions = [
-            FieldCondition(
-                key="user_id",
-                match=MatchValue(value=user_id)
-            )
+            FieldCondition(key="user_id", match=MatchValue(value=user_id))
         ]
 
-        if document_id:
+        if document_ids:
             must_conditions.append(
-                FieldCondition(
-                    key="document_id",
-                    match=MatchValue(value=str(document_id))
-                )
+                FieldCondition(key="document_id", match=MatchAny(any=document_ids))
             )
 
         query_filter = Filter(must=must_conditions)
@@ -122,25 +78,16 @@ class VectorStore:
             limit=top_k,
             query_filter=query_filter
         )
-
         return results
 
     def delete_document(self, document_id: str):
-        """
-        Delete all vectors for a given document_id.
-        """
         self.client.delete(
             collection_name=COLLECTION_NAME,
             points_selector=Filter(
                 must=[
-                    FieldCondition(
-                        key="document_id",
-                        match=MatchValue(value=str(document_id))
-                    )
+                    FieldCondition(key="document_id", match=MatchValue(value=str(document_id)))
                 ]
             )
         )
 
-
-# Singleton instance
 vector_store = VectorStore()

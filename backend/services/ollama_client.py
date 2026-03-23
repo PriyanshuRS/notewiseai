@@ -1,23 +1,13 @@
 import httpx
-from config.settings import settings
-
+from django.conf import settings
 
 class OllamaClient:
-    """
-    Handles communication with the local Ollama LLM runtime.
-    """
-
     def __init__(self):
-        self.base_url = settings.OLLAMA_BASE_URL
-        self.model = settings.OLLAMA_MODEL
+        self.base_url = getattr(settings, 'OLLAMA_BASE_URL', 'http://localhost:11434')
+        self.model = getattr(settings, 'OLLAMA_MODEL', 'llama3.1')
 
     async def generate(self, prompt: str) -> str:
-        """
-        Send prompt to Ollama and return generated text.
-        """
-
         url = f"{self.base_url}/api/generate"
-
         payload = {
             "model": self.model,
             "prompt": prompt,
@@ -31,9 +21,6 @@ class OllamaClient:
             raise RuntimeError(f"Ollama request failed: {response.text}")
 
         data = response.json()
-
         return data.get("response", "").strip()
 
-
-# Singleton instance
 ollama_client = OllamaClient()

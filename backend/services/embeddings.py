@@ -2,19 +2,16 @@ from sentence_transformers import SentenceTransformer
 from typing import List
 import numpy as np
 
-from config.settings import settings
-
+from django.conf import settings
 
 class EmbeddingService:
     """
     Handles embedding generation for documents and queries.
     Loads the SentenceTransformer model once and reuses it.
     """
-
     def __init__(self):
-
-        self.model = SentenceTransformer(settings.EMBEDDING_MODEL)
-
+        model_name = getattr(settings, 'EMBEDDING_MODEL', 'all-MiniLM-L6-v2')
+        self.model = SentenceTransformer(model_name)
         # cache embedding dimension
         self.dimension = self.model.get_sentence_embedding_dimension()
 
