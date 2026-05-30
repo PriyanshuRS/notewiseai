@@ -98,9 +98,13 @@ class DocumentUploadView(APIView):
                 doc.save()
             except Exception as e:
                 import logging
-                logging.getLogger(__name__).error(f"Doc Processing Failed: {e}")
+                import traceback
+                logging.getLogger(__name__).error(f"Doc Processing Failed: {e}\n{traceback.format_exc()}")
                 doc.status = "failed"
                 doc.save()
+            finally:
+                from django.db import connection
+                connection.close()
                 
         threading.Thread(target=process_doc).start()
         

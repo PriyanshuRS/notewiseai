@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     EMBEDDING_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
 
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "llama3.1"
+    OLLAMA_MODEL: str = "qwen3.5:4b"
 
     CHUNK_SIZE: int = 500
     CHUNK_OVERLAP: int = 80

@@ -22,10 +22,12 @@ COLLECTION_NAME = "pdf_chunks"
 class VectorStore:
     def __init__(self):
         import os
+        import threading
         from django.conf import settings
         qdrant_path = os.path.join(settings.BASE_DIR, "qdrant_db")
         self.client = QdrantClient(path=qdrant_path)
         self.dimension = embedding_service.dimension
+        self.lock = threading.Lock()
         self._ensure_collection()
 
     def _ensure_collection(self):
@@ -58,7 +60,8 @@ class VectorStore:
                     payload=payload
                 )
             )
-        self.client.upsert(collection_name=COLLECTION_NAME, points=points)
+        with self.lock:
+            self.client.upsert(collection_name=COLLECTION_NAME, points=points)
 
     def search(self, query_vector: List[float], user_id: int, document_ids: List[str] = None, top_k: int = 5):
         must_conditions = [
@@ -81,13 +84,14 @@ class VectorStore:
         return results
 
     def delete_document(self, document_id: str):
-        self.client.delete(
-            collection_name=COLLECTION_NAME,
-            points_selector=Filter(
-                must=[
-                    FieldCondition(key="document_id", match=MatchValue(value=str(document_id)))
-                ]
+        with self.lock:
+            self.client.delete(
+                collection_name=COLLECTION_NAME,
+                points_selector=Filter(
+                    must=[
+                        FieldCondition(key="document_id", match=MatchValue(value=str(document_id)))
+                    ]
+                )
             )
-        )
 
 vector_store = VectorStore()
