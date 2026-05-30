@@ -1,14 +1,15 @@
-import { BrainCircuit } from 'lucide-react';
+import { BrainCircuit, Settings } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
 
 interface NavbarProps {
   token: string;
   setView: Dispatch<SetStateAction<'landing' | 'dashboard' | 'chat'>>;
   setAuthModal: Dispatch<SetStateAction<'login' | 'register' | null>>;
+  setShowSettingsModal: Dispatch<SetStateAction<boolean>>;
   handleGoToDashboard: () => void;
 }
 
-export function Navbar({ token, setView, setAuthModal, handleGoToDashboard }: NavbarProps) {
+export function Navbar({ token, setView, setAuthModal, setShowSettingsModal, handleGoToDashboard }: NavbarProps) {
   return (
     <nav className="fixed top-0 w-full z-50 bg-black/50 backdrop-blur-xl border-b border-white/[0.08]">
       <div className="max-w-[1200px] mx-auto px-6 h-14 flex items-center justify-between">
@@ -24,7 +25,12 @@ export function Navbar({ token, setView, setAuthModal, handleGoToDashboard }: Na
                 <button onClick={() => setAuthModal('register')} className="text-sm font-medium px-4 py-1.5 bg-white text-black rounded-full hover:bg-zinc-200 transition">Sign up</button>
               </>
             ) : (
-              <button onClick={handleGoToDashboard} className="text-sm font-medium px-4 py-1.5 bg-white text-black rounded-full hover:bg-zinc-200 transition">Dashboard</button>
+              <>
+                <button onClick={() => setShowSettingsModal(true)} className="p-1.5 text-[#a1a1aa] hover:text-white transition rounded-md hover:bg-white/5">
+                  <Settings className="w-4 h-4" />
+                </button>
+                <button onClick={handleGoToDashboard} className="text-sm font-medium px-4 py-1.5 bg-white text-black rounded-full hover:bg-zinc-200 transition">Dashboard</button>
+              </>
             )}
           </div>
         </div>

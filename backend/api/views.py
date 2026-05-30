@@ -133,6 +133,9 @@ class MessageCreateView(APIView):
         doc_ids = list(chat.documents.values_list('id', flat=True))
         doc_ids = [str(d) for d in doc_ids]
 
+        provider = request.headers.get("X-LLM-Provider", "ollama")
+        api_key = request.headers.get("X-OpenAI-Key", "")
+
         import asyncio
         from services.rag_pipeline import rag_pipeline
         
@@ -142,7 +145,9 @@ class MessageCreateView(APIView):
             result = loop.run_until_complete(rag_pipeline.query(
                 question=content,
                 user_id=request.user.id,
-                document_ids=doc_ids
+                document_ids=doc_ids,
+                provider=provider,
+                api_key=api_key
             ))
             loop.close()
         except RuntimeError:
@@ -151,7 +156,9 @@ class MessageCreateView(APIView):
             result = asgiref.sync.async_to_sync(rag_pipeline.query)(
                 question=content,
                 user_id=request.user.id,
-                document_ids=doc_ids
+                document_ids=doc_ids,
+                provider=provider,
+                api_key=api_key
             )
         
         ai_msg = Message.objects.create(chat=chat, sender='ai', content=result['answer'])
@@ -194,8 +201,11 @@ class QuizGenerateView(APIView):
             return Response({"error": "No relevant context found in this chat for the given topic."}, status=400)
             
         import json
-        from services.ollama_client import ollama_client
+        from services.llm_client import llm_client
         import asyncio
+        
+        provider = request.headers.get("X-LLM-Provider", "ollama")
+        api_key = request.headers.get("X-OpenAI-Key", "")
         
         prompt = f"""
 CONTEXT:
@@ -219,11 +229,11 @@ Return ONLY valid JSON in this exact format. Do not use Markdown backticks.
         try:
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-            response_text = loop.run_until_complete(ollama_client.generate(prompt))
+            response_text = loop.run_until_complete(llm_client.generate(prompt, provider=provider, api_key=api_key))
             loop.close()
         except RuntimeError:
             import asgiref.sync
-            response_text = asgiref.sync.async_to_sync(ollama_client.generate)(prompt)
+            response_text = asgiref.sync.async_to_sync(llm_client.generate)(prompt, provider=provider, api_key=api_key)
             
         try:
             # Strip potential markdown formatting if Ollama adds it anyway
@@ -315,7 +325,10 @@ class SummarizeView(APIView):
             return Response({"error": "No relevant info found in notes for this topic."}, status=400)
             
         import asyncio
-        from services.ollama_client import ollama_client
+        from services.llm_client import llm_client
+        
+        provider = request.headers.get("X-LLM-Provider", "ollama")
+        api_key = request.headers.get("X-OpenAI-Key", "")
         
         prompt = f"""
 CONTEXT:
@@ -327,11 +340,11 @@ Do not hallucinate external information. Focus on the key concepts, definitions,
         try:
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-            response_text = loop.run_until_complete(ollama_client.generate(prompt))
+            response_text = loop.run_until_complete(llm_client.generate(prompt, provider=provider, api_key=api_key))
             loop.close()
         except RuntimeError:
             import asgiref.sync
-            response_text = asgiref.sync.async_to_sync(ollama_client.generate)(prompt)
+            response_text = asgiref.sync.async_to_sync(llm_client.generate)(prompt, provider=provider, api_key=api_key)
             
         return Response({"summary": response_text}, status=200)
 
@@ -370,8 +383,11 @@ class FlashcardGenerateView(APIView):
             return Response({"error": "No relevant context found in this chat for the given topic."}, status=400)
             
         import json
-        from services.ollama_client import ollama_client
+        from services.llm_client import llm_client
         import asyncio
+        
+        provider = request.headers.get("X-LLM-Provider", "ollama")
+        api_key = request.headers.get("X-OpenAI-Key", "")
         
         prompt = f"""
 CONTEXT:
@@ -391,11 +407,11 @@ Return ONLY valid JSON in this exact format. Do not use Markdown backticks.
         try:
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-            response_text = loop.run_until_complete(ollama_client.generate(prompt))
+            response_text = loop.run_until_complete(llm_client.generate(prompt, provider=provider, api_key=api_key))
             loop.close()
         except RuntimeError:
             import asgiref.sync
-            response_text = asgiref.sync.async_to_sync(ollama_client.generate)(prompt)
+            response_text = asgiref.sync.async_to_sync(llm_client.generate)(prompt, provider=provider, api_key=api_key)
             
         try:
             import re

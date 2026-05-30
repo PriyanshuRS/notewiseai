@@ -2,8 +2,7 @@ from typing import List
 
 from services.embeddings import embedding_service
 from services.vector_store import vector_store
-from services.ollama_client import ollama_client
-
+from services.llm_client import llm_client
 
 class RAGPipeline:
     async def query(
@@ -11,7 +10,9 @@ class RAGPipeline:
         question: str,
         user_id: int,
         document_ids: List[str] = None,
-        top_k: int = 5
+        top_k: int = 5,
+        provider: str = "ollama",
+        api_key: str = ""
     ):
         query_vector = embedding_service.embed_query(question)
 
@@ -44,7 +45,7 @@ class RAGPipeline:
 
         context = "\n\n".join(retrieved_chunks)
         prompt = self._build_prompt(context, question)
-        answer = await ollama_client.generate(prompt)
+        answer = await llm_client.generate(prompt, provider=provider, api_key=api_key)
 
         return {
             "answer": answer,

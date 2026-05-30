@@ -75,6 +75,11 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 
+from corsheaders.defaults import default_headers
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "x-llm-provider",
+    "x-openai-key",
+]
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [

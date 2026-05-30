@@ -10,12 +10,18 @@ import { AuthModal } from '../components/modals/AuthModal';
 import { DocumentCenterModal } from '../components/modals/DocumentCenterModal';
 import { QuizModal } from '../components/modals/QuizModal';
 import { FlashcardReviewModal } from '../components/modals/FlashcardReviewModal';
+import { SettingsModal } from '../components/modals/SettingsModal';
 
 const API = 'http://127.0.0.1:8000/api';
 
 export default function App() {
   const [view, setView] = useState<'landing' | 'dashboard' | 'chat'>('landing');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
+
+  // Settings State
+  const [provider, setProvider] = useState<'ollama' | 'openai'>('ollama');
+  const [openaiKey, setOpenaiKey] = useState('');
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   // Auth State
   const [username, setUsername] = useState('');
@@ -59,6 +65,11 @@ export default function App() {
   useEffect(() => {
     const savedToken = localStorage.getItem('nw_token');
     const savedUser = localStorage.getItem('nw_user');
+    const savedProvider = localStorage.getItem('nw_provider') as 'ollama' | 'openai';
+    const savedKey = localStorage.getItem('nw_openai_key');
+    if (savedProvider) setProvider(savedProvider);
+    if (savedKey) setOpenaiKey(savedKey);
+
     if (savedToken) {
       setToken(savedToken);
       if (savedUser) setUsername(savedUser);
@@ -67,6 +78,14 @@ export default function App() {
       fetchAnalytics(savedToken);
     }
   }, []);
+
+  useEffect(() => {
+    if (provider) localStorage.setItem('nw_provider', provider);
+  }, [provider]);
+
+  useEffect(() => {
+    localStorage.setItem('nw_openai_key', openaiKey);
+  }, [openaiKey]);
 
   // Polling for processing documents
   useEffect(() => {
@@ -256,7 +275,12 @@ export default function App() {
       try {
         const res = await fetch(`${API}/chats/${activeChat.id}/summarize/`, {
           method: 'POST',
-          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+          headers: { 
+            Authorization: `Bearer ${token}`, 
+            'Content-Type': 'application/json',
+            'X-LLM-Provider': provider,
+            'X-OpenAI-Key': openaiKey
+          },
           body: JSON.stringify({ topic: currentQuery })
         });
         if (res.ok) {
@@ -270,7 +294,12 @@ export default function App() {
       try {
         const res = await fetch(`${API}/chats/${activeChat.id}/messages/`, {
           method: 'POST',
-          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+          headers: { 
+            Authorization: `Bearer ${token}`, 
+            'Content-Type': 'application/json',
+            'X-LLM-Provider': provider,
+            'X-OpenAI-Key': openaiKey
+          },
           body: JSON.stringify({ content: currentQuery })
         });
         if (res.ok) {
@@ -294,7 +323,12 @@ export default function App() {
     try {
       const res = await fetch(`${API}/quizzes/generate/`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        headers: { 
+          Authorization: `Bearer ${token}`, 
+          'Content-Type': 'application/json',
+          'X-LLM-Provider': provider,
+          'X-OpenAI-Key': openaiKey
+        },
         body: JSON.stringify({ chat_id: activeChat.id, topic: quizTopic })
       });
       if (res.ok) {
@@ -353,7 +387,12 @@ export default function App() {
     try {
       const res = await fetch(`${API}/study/flashcards/generate/`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        headers: { 
+          Authorization: `Bearer ${token}`, 
+          'Content-Type': 'application/json',
+          'X-LLM-Provider': provider,
+          'X-OpenAI-Key': openaiKey
+        },
         body: JSON.stringify({ chat_id: activeChat.id, topic: flashcardTopic })
       });
       if (res.ok) {
@@ -400,7 +439,13 @@ export default function App() {
   return (
     <div className="min-h-screen bg-black text-[#f4f4f5] font-sans selection:bg-white/20 overflow-x-hidden">
       
-      <Navbar token={token} setView={setView} setAuthModal={setAuthModal} handleGoToDashboard={handleGoToDashboard} />
+      <Navbar token={token} setView={setView} setAuthModal={setAuthModal} setShowSettingsModal={setShowSettingsModal} handleGoToDashboard={handleGoToDashboard} />
+      
+      <SettingsModal
+        showSettingsModal={showSettingsModal} setShowSettingsModal={setShowSettingsModal}
+        provider={provider} setProvider={setProvider}
+        openaiKey={openaiKey} setOpenaiKey={setOpenaiKey}
+      />
       
       <AuthModal 
         authModal={authModal} setAuthModal={setAuthModal}
