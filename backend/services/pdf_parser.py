@@ -3,17 +3,9 @@ import re
 from typing import List, Dict
 
 class PDFParser:
-    """
-    Service responsible for extracting structured text from PDFs.
-    Uses PyMuPDF (fitz) for high-performance parsing.
-    """
     
     @staticmethod
     def parse_pdf(file_path: str) -> List[Dict]:
-        """
-        Extract text from each page of the PDF.
-        Returns a list of dicts with page_number and text.
-        """
         pages = []
         try:
             doc = fitz.open(file_path)
@@ -31,6 +23,5 @@ class PDFParser:
         return pages
 
 def clean_text(text: str) -> str:
-    """Normalize whitespace and remove excessive newlines."""
     text = re.sub(r'\s+', ' ', text)
     return text.strip()

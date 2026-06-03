@@ -23,7 +23,6 @@ class LLMClient:
             "think": False
         }
 
-        # Set system instructions to discourage reasoning model thinking
         if system:
             payload["system"] = system
         else:
@@ -38,7 +37,6 @@ class LLMClient:
         data = response.json()
         raw_response = data.get("response", "").strip()
         
-        # Clean up UI: Strip `<think>...</think>` blocks if they are still generated
         clean_response = re.sub(r'<think>[\s\S]*?</think>', '', raw_response).strip()
         return clean_response
 

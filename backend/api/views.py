@@ -69,7 +69,6 @@ class DocumentUploadView(APIView):
             status="processing"
         )
         
-        # trigger processing in the background
         from services.pdf_parser import PDFParser
         from services.chunking import TextChunker
         from services.embeddings import embedding_service
@@ -151,7 +150,6 @@ class MessageCreateView(APIView):
             ))
             loop.close()
         except RuntimeError:
-            # Fallback if there's already a loop
             import asgiref.sync
             result = asgiref.sync.async_to_sync(rag_pipeline.query)(
                 question=content,
@@ -236,7 +234,6 @@ Return ONLY valid JSON in this exact format. Do not use Markdown backticks.
             response_text = asgiref.sync.async_to_sync(llm_client.generate)(prompt, provider=provider, api_key=api_key)
             
         try:
-            # Strip potential markdown formatting if Ollama adds it anyway
             if response_text.startswith("```json"):
                 response_text = response_text[7:-3]
             quiz_data = json.loads(response_text)
@@ -263,7 +260,7 @@ class QuizSubmitView(APIView):
     def post(self, request, quiz_id):
         from .models import Quiz, QuizAttempt, AttemptDetail, Question, UserWeakness
         quiz = generics.get_object_or_404(Quiz, id=quiz_id, user=request.user)
-        answers = request.data.get('answers', {}) # Dict of { question_id: user_answer }
+        answers = request.data.get('answers', {})
         
         attempt = QuizAttempt.objects.create(user=request.user, quiz=quiz)
         correct_count = 0
@@ -276,7 +273,6 @@ class QuizSubmitView(APIView):
             if is_correct:
                 correct_count += 1
             else:
-                # Track weakness
                 weakness, _ = UserWeakness.objects.get_or_create(user=request.user, topic_tag=question.topic_tag)
                 weakness.incorrect_count += 1
                 weakness.save()
@@ -416,7 +412,6 @@ Return ONLY valid JSON in this exact format. Do not use Markdown backticks.
         try:
             import re
             
-            # Use regex to find the JSON array in case Ollama added conversational text
             match = re.search(r'\[[\s\S]*\]', response_text)
             if match:
                 clean_json = match.group(0)
@@ -427,7 +422,6 @@ Return ONLY valid JSON in this exact format. Do not use Markdown backticks.
             
             created_cards = []
             for c in cards_data:
-                # Basic validation
                 if not isinstance(c, dict) or 'front_text' not in c or 'back_text' not in c:
                     continue
                     
@@ -454,7 +448,6 @@ class FlashcardListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         from .models import Flashcard
-        # Return all flashcards for the user as notes
         return Flashcard.objects.filter(
             user=self.request.user
         ).order_by('-created_at')
@@ -471,7 +464,7 @@ class FlashcardReviewView(APIView):
         from django.utils import timezone
 
         card = generics.get_object_or_404(Flashcard, id=pk, user=request.user)
-        difficulty = request.data.get('difficulty', 'medium') # easy, medium, hard
+        difficulty = request.data.get('difficulty', 'medium')
         
         if difficulty == 'easy':
             days_to_add = 4

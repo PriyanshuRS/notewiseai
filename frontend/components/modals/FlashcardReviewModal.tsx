@@ -61,7 +61,7 @@ export function FlashcardReviewModal({
                       transition={{ duration: 0.6, type: 'spring', stiffness: 260, damping: 20 }}
                       style={{ transformStyle: 'preserve-3d' }}
                     >
-                      {/* Front */}
+                      {}
                       <div 
                         className="absolute inset-0 bg-[#121214] border border-white/10 rounded-2xl p-8 shadow-xl flex flex-col justify-center items-center text-center cursor-pointer hover:border-orange-500/30 transition-colors"
                         style={{ backfaceVisibility: 'hidden' }}
@@ -72,7 +72,7 @@ export function FlashcardReviewModal({
                         <p className="text-zinc-500 text-sm mt-8 opacity-70">Click to reveal answer</p>
                       </div>
 
-                      {/* Back */}
+                      {}
                       <div 
                         className="absolute inset-0 bg-orange-500/10 border border-orange-500/30 rounded-2xl p-8 shadow-[0_0_30px_rgba(249,115,22,0.1)] flex flex-col justify-center items-center text-center overflow-y-auto"
                         style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
@@ -82,7 +82,7 @@ export function FlashcardReviewModal({
                     </motion.div>
                   </div>
                   
-                  {/* Controls */}
+                  {}
                   <div className="w-full mt-8 h-12 flex justify-center">
                      {isFlipped && (
                         <div className="flex w-full gap-3">

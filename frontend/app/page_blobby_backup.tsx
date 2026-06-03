@@ -13,14 +13,12 @@ export default function NoteWiseApp() {
   const [view, setView] = useState<'landing' | 'dashboard'>('landing');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
   
-  // Auth State
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
   const [user, setUser] = useState<any>(null);
 
-  // App State
   const [chats, setChats] = useState<any[]>([]);
   const [activeChat, setActiveChat] = useState<any>(null);
   const [messages, setMessages] = useState<any[]>([]);
@@ -37,7 +35,6 @@ export default function NoteWiseApp() {
     scrollToBottom();
   }, [messages]);
 
-  // Auth Handlers
   const handleRegister = async () => {
     try {
       const res = await fetch(`${API}/auth/register/`, {
@@ -69,7 +66,6 @@ export default function NoteWiseApp() {
     } catch {}
   };
 
-  // Chat Handlers
   const fetchChats = async (t: string) => {
     const res = await fetch(`${API}/chats/`, { headers: { Authorization: `Bearer ${t}` } });
     const data = await res.json();
@@ -111,7 +107,7 @@ export default function NoteWiseApp() {
     });
     
     setIsUploading(false);
-    if (res.ok) fetchChats(token); // Refresh chat docs
+    if (res.ok) fetchChats(token);
   };
 
   const sendMessage = async () => {
@@ -134,7 +130,7 @@ export default function NoteWiseApp() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-zinc-200 font-sans selection:bg-indigo-500/30 overflow-x-hidden">
-      {/* Navbar */}
+      {}
       <nav className="sticky top-0 z-50 border-b border-white/5 bg-[#0A0A0A]/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('landing')}>
@@ -170,7 +166,7 @@ export default function NoteWiseApp() {
         </div>
       </nav>
 
-      {/* Auth Modal */}
+      {}
       <AnimatePresence>
         {authModal && (
           <motion.div 
@@ -217,7 +213,7 @@ export default function NoteWiseApp() {
         )}
       </AnimatePresence>
 
-      {/* Main Content Area */}
+      {}
       {view === 'landing' ? (
         <main className="max-w-7xl mx-auto px-6 py-20">
           <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-32">
@@ -239,9 +235,9 @@ export default function NoteWiseApp() {
             </button>
           </div>
 
-          {/* Bento Grid Features */}
+          {}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
-            {/* Feature 1 */}
+            {}
             <div className="md:col-span-2 bg-gradient-to-br from-[#121214] to-[#0A0A0A] border border-white/10 rounded-3xl p-8 relative overflow-hidden group">
               <div className="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
               <Brain className="w-8 h-8 text-indigo-400 mb-6" />
@@ -250,7 +246,7 @@ export default function NoteWiseApp() {
                 Chat directly with your uploaded notes. Our semantic RAG pipeline ensures answers are precise, sourced, and free of hallucination.
               </p>
             </div>
-            {/* Feature 2 */}
+            {}
             <div className="bg-gradient-to-br from-[#121214] to-[#0A0A0A] border border-white/10 rounded-3xl p-8 relative overflow-hidden">
               <Activity className="w-8 h-8 text-emerald-400 mb-6" />
               <h3 className="text-2xl font-medium text-white mb-3">Weakness Detection</h3>

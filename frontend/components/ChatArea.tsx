@@ -9,7 +9,7 @@ interface ChatAreaProps {
   uploadFile: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
   isUploading: boolean;
   messages: any[];
-  messagesEndRef: RefObject<HTMLDivElement>;
+  messagesEndRef: RefObject<HTMLDivElement | null>;
   isSummarizeMode: boolean;
   setIsSummarizeMode: Dispatch<SetStateAction<boolean>>;
   query: string;
@@ -24,7 +24,7 @@ export function ChatArea({
 }: ChatAreaProps) {
   return (
     <div className="flex flex-col h-full w-full max-w-[1000px] mx-auto bg-black relative">
-      {/* Chat Header */}
+      {}
       <div className="absolute top-0 inset-x-0 h-20 px-8 border-b border-white/[0.04] flex items-center justify-between bg-[#030305]/80 backdrop-blur-xl z-20">
         <div className="flex items-center gap-4">
             <h2 className="text-xl font-bold tracking-tight text-white">{activeChat.title}</h2>
@@ -49,7 +49,7 @@ export function ChatArea({
         </div>
       </div>
 
-      {/* Chat Messages */}
+      {}
       <div className="flex-1 overflow-y-auto pt-24 pb-32 px-6 md:px-10 space-y-8 scroll-smooth relative z-0">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center opacity-50">
@@ -72,7 +72,7 @@ export function ChatArea({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Bar */}
+      {}
       <div className="p-6 shrink-0 bg-black">
         <div className={`relative flex items-center bg-[#111] border ${isSummarizeMode ? 'border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.15)]' : 'border-white/10'} rounded-xl shadow-lg transition-colors focus-within:border-white/20`}>
           <button 

@@ -18,18 +18,15 @@ export default function App() {
   const [view, setView] = useState<'landing' | 'dashboard' | 'chat'>('landing');
   const [authModal, setAuthModal] = useState<'login' | 'register' | null>(null);
 
-  // Settings State
   const [provider, setProvider] = useState<'ollama' | 'openai'>('ollama');
   const [openaiKey, setOpenaiKey] = useState('');
   const [showSettingsModal, setShowSettingsModal] = useState(false);
 
-  // Auth State
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
 
-  // App State
   const [chats, setChats] = useState<any[]>([]);
   const [activeChat, setActiveChat] = useState<any>(null);
   const [messages, setMessages] = useState<any[]>([]);
@@ -38,7 +35,6 @@ export default function App() {
   const [showDocCenter, setShowDocCenter] = useState(false);
   const [isSummarizeMode, setIsSummarizeMode] = useState(false);
   
-  // Quiz State
   const [showQuizModal, setShowQuizModal] = useState(false);
   const [quizTopic, setQuizTopic] = useState('');
   const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
@@ -46,7 +42,6 @@ export default function App() {
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
   const [quizResult, setQuizResult] = useState<any>(null);
 
-  // Flashcard State
   const [showFlashcardModal, setShowFlashcardModal] = useState(false);
   const [flashcardTopic, setFlashcardTopic] = useState('');
   const [isGeneratingFlashcards, setIsGeneratingFlashcards] = useState(false);
@@ -61,7 +56,6 @@ export default function App() {
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   useEffect(() => scrollToBottom(), [messages]);
 
-  // Session Persistance
   useEffect(() => {
     const savedToken = localStorage.getItem('nw_token');
     const savedUser = localStorage.getItem('nw_user');
@@ -87,7 +81,6 @@ export default function App() {
     localStorage.setItem('nw_openai_key', openaiKey);
   }, [openaiKey]);
 
-  // Polling for processing documents
   useEffect(() => {
     if (!token) return;
     const hasProcessing = chats.some(c => c.documents?.some((d: any) => d.status === 'processing'));
@@ -100,7 +93,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, [chats, token]);
 
-  // Auth Handlers
   const handleAuth = async (isLogin: boolean) => {
     const endpoint = isLogin ? '/auth/login/' : '/auth/register/';
     const body = isLogin ? { username, password } : { username, email, password };
@@ -312,7 +304,6 @@ export default function App() {
     }
   };
 
-  // Quiz Handlers
   const generateQuiz = async () => {
     if (!quizTopic || !activeChat) return;
     setIsGeneratingQuiz(true);
@@ -363,7 +354,6 @@ export default function App() {
     }
   };
 
-  // Flashcard Handlers
   const fetchDueFlashcards = async () => {
     try {
       const res = await fetch(`${API}/study/flashcards/`, { headers: { Authorization: `Bearer ${token}` } });
@@ -499,7 +489,7 @@ export default function App() {
                     query={query} setQuery={setQuery} sendMessage={sendMessage}
                   />
                 </div>
-                {/* Right Flashcard Sidebar */}
+                {}
                 <FlashcardSidebar 
                   flashcardTopic={flashcardTopic} setFlashcardTopic={setFlashcardTopic}
                   generateFlashcards={generateFlashcards} isGeneratingFlashcards={isGeneratingFlashcards}

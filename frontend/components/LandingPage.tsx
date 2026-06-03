@@ -9,27 +9,27 @@ export function LandingPage({ setAuthModal }: LandingPageProps) {
   return (
     <div className="pt-32 pb-20 relative">
 
-      {/* Abstract Symmetrical-Asymmetrical Tech Grid */}
+      {}
       <div className="absolute top-0 inset-x-0 h-[100vh] pointer-events-none z-0 overflow-hidden"
         style={{ maskImage: 'linear-gradient(to bottom, black 20%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 20%, transparent 100%)' }}>
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <g stroke="rgba(255,255,255,0.3)" strokeWidth="1" fill="none">
-            {/* Diagonal Network */}
+            {}
             <line x1="15%" y1="-10%" x2="45%" y2="110%" />
             <line x1="85%" y1="-10%" x2="55%" y2="110%" />
             <line x1="-10%" y1="20%" x2="110%" y2="60%" />
             <line x1="-10%" y1="70%" x2="110%" y2="30%" />
             <line x1="-10%" y1="90%" x2="110%" y2="90%" strokeDasharray="4 4" />
 
-            {/* Structural Orbits */}
+            {}
             <ellipse cx="50%" cy="30%" rx="800" ry="300" strokeWidth="0.5" className="opacity-50" />
             <ellipse cx="50%" cy="30%" rx="600" ry="200" strokeWidth="0.5" strokeDasharray="10 10" className="opacity-30" />
 
-            {/* Asymmetrical Intersecting Curves */}
+            {}
             <path d="M-200,800 C400,200 800,800 1920,0" strokeWidth="0.5" className="opacity-40" />
             <path d="M-200,100 C600,600 1200,100 1920,800" strokeWidth="0.5" />
 
-            {/* Node Intersections */}
+            {}
             <circle cx="35%" cy="35%" r="2" fill="white" className="opacity-50" />
             <circle cx="65%" cy="35%" r="2" fill="white" className="opacity-50" />
             <circle cx="50%" cy="40%" r="3" fill="none" stroke="white" className="opacity-50" />
@@ -37,7 +37,7 @@ export function LandingPage({ setAuthModal }: LandingPageProps) {
         </svg>
       </div>
 
-      {/* Hero Section */}
+      {}
       <section className="relative z-10 flex flex-col items-center justify-center text-center px-6 max-w-[1000px] mx-auto mb-32">
         <h1 className="text-5xl md:text-7xl lg:text-[80px] font-medium tracking-tighter text-white mb-8 leading-[1]">
           The intelligence system for learners and thinkers.
@@ -52,12 +52,12 @@ export function LandingPage({ setAuthModal }: LandingPageProps) {
         </div>
       </section>
 
-      {/* Hero App Mockup */}
+      {}
       <div className="max-w-[1200px] mx-auto px-6 mb-32 relative">
-        {/* Solid Accent Glow */}
+        {}
         <div className="absolute inset-0 top-1/2 bg-rose-500/5 blur-[120px] rounded-full pointer-events-none" />
         <div className="relative w-full aspect-video bg-[#0A0A0A] border border-white/[0.08] rounded-xl overflow-hidden shadow-[0_0_60px_rgba(225,29,72,0.05)] flex flex-col">
-          {/* Mockup Header */}
+          {}
           <div className="h-12 border-b border-white/[0.08] flex items-center px-4 gap-4 bg-[#111]">
             <div className="flex gap-1.5 pl-2">
               <div className="w-3 h-3 rounded-full bg-zinc-700" />
@@ -68,9 +68,9 @@ export function LandingPage({ setAuthModal }: LandingPageProps) {
               <Search className="w-3 h-3" /> search your notes...
             </div>
           </div>
-          {/* Mockup Body with Abstract Node Network Instead of Image */}
+          {}
           <div className="flex-1 flex bg-[#0e0e11] relative overflow-hidden">
-            {/* Abstract Mockup Background lines */}
+            {}
             <svg className="absolute inset-0 w-full h-full opacity-20 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
               <g stroke="white" strokeWidth="0.5">
                 <line x1="30%" y1="-10%" x2="30%" y2="110%" className="opacity-30 stroke-dasharray-[4_4]" />
@@ -78,7 +78,7 @@ export function LandingPage({ setAuthModal }: LandingPageProps) {
                 <line x1="-10%" y1="50%" x2="110%" y2="50%" className="opacity-30 stroke-dasharray-[4_4]" />
               </g>
             </svg>
-            {/* Sidebar */}
+            {}
             <div className="hidden md:flex flex-col w-[240px] border-r border-white/5 bg-[#0A0A0A] shrink-0">
               <div className="p-4 border-b border-white/5">
                 <div className="w-full bg-white text-black font-medium text-xs md:text-sm py-2 rounded-md flex items-center justify-center gap-2">
@@ -91,7 +91,7 @@ export function LandingPage({ setAuthModal }: LandingPageProps) {
                 <div className="w-full text-left px-3 py-2 rounded text-xs md:text-sm text-zinc-400">Macroeconomics</div>
                 <div className="w-full text-left px-3 py-2 rounded text-xs md:text-sm text-zinc-400">Computer Science</div>
               </div>
-              {/* Account Footer Mockup */}
+              {}
               <div className="p-3 border-t border-white/5 mt-auto">
                 <div className="w-full flex items-center justify-between px-2 py-2 hover:bg-white/5 rounded-md cursor-pointer transition">
                   <div className="flex items-center gap-3">
@@ -104,9 +104,9 @@ export function LandingPage({ setAuthModal }: LandingPageProps) {
                 </div>
               </div>
             </div>
-            {/* Main Content */}
+            {}
             <div className="flex-1 flex flex-col bg-black relative">
-              {/* Chat Header */}
+              {}
               <div className="h-14 md:h-16 px-4 md:px-6 border-b border-white/5 flex items-center justify-between shrink-0 bg-black/80 backdrop-blur z-10">
                 <h2 className="text-sm md:text-lg font-medium tracking-tight text-white">Physics 101</h2>
                 <div className="hidden sm:flex items-center gap-4">
@@ -116,7 +116,7 @@ export function LandingPage({ setAuthModal }: LandingPageProps) {
                   </div>
                 </div>
               </div>
-              {/* Chat Messages */}
+              {}
               <div className="flex-1 p-4 md:p-8 flex flex-col justify-end space-y-4 md:space-y-6">
                 <div className="flex max-w-[85%] ml-auto justify-end">
                   <div className="text-xs md:text-sm leading-relaxed px-4 py-3 md:px-5 md:py-4 rounded-2xl bg-[#1e1e1e] text-zinc-200 border border-white/5 shadow-sm">
@@ -129,7 +129,7 @@ export function LandingPage({ setAuthModal }: LandingPageProps) {
                   </div>
                 </div>
               </div>
-              {/* Input Bar */}
+              {}
               <div className="p-4 md:p-6 shrink-0 bg-black">
                 <div className="relative flex items-center bg-[#111] border border-white/10 rounded-xl shadow-lg">
                   <div className="w-full bg-transparent pl-4 pr-12 py-3 md:py-4 text-xs md:text-sm text-zinc-500">
@@ -145,7 +145,7 @@ export function LandingPage({ setAuthModal }: LandingPageProps) {
         </div>
       </div>
 
-      {/* 3 Wireframe Cards */}
+      {}
       <section className="px-6 py-20 max-w-[1200px] mx-auto border-t border-white/[0.08]">
         <div className="mb-16 max-w-2xl">
           <h2 className="text-3xl md:text-5xl font-medium tracking-tight mb-6 text-white leading-tight">A new approach to study tools.</h2>
@@ -176,7 +176,7 @@ export function LandingPage({ setAuthModal }: LandingPageProps) {
         </div>
       </section>
 
-      {/* Grand Alternating Feature 1 */}
+      {}
       <section className="px-6 py-24 max-w-[1200px] mx-auto flex flex-col md:flex-row gap-16 items-center border-t border-white/[0.08]">
         <div className="flex-1 relative z-10">
           <h2 className="text-3xl md:text-5xl font-medium tracking-tight mb-6 text-white leading-tight">Chat with your curriculum.</h2>
@@ -193,7 +193,7 @@ export function LandingPage({ setAuthModal }: LandingPageProps) {
         </div>
       </section>
 
-      {/* Grand Alternating Feature 2 */}
+      {}
       <section className="px-6 py-24 max-w-[1200px] mx-auto flex flex-col md:flex-row-reverse gap-16 items-center border-t border-white/[0.08]">
         <div className="flex-1 relative z-10">
           <h2 className="text-3xl md:text-5xl font-medium tracking-tight mb-6 text-white leading-tight">Identify your knowledge gaps.</h2>

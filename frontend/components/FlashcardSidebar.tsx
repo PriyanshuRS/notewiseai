@@ -34,7 +34,7 @@ export function FlashcardSidebar({
           )}
         </div>
         
-        {/* Create New Cards */}
+        {}
         <div className="flex flex-col gap-2">
           <input
             type="text"
@@ -58,7 +58,7 @@ export function FlashcardSidebar({
         </div>
       </div>
 
-      {/* Notes Area */}
+      {}
       <div className="flex-1 overflow-y-auto p-5 space-y-4">
         {dueFlashcards.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center opacity-70">

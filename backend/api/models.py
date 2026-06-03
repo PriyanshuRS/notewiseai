@@ -102,7 +102,6 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_delete, sender=Document)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
-    # Delete from Qdrant database
     if instance.id:
         try:
             from services.vector_store import vector_store
@@ -111,7 +110,6 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
         except Exception as e:
             logger.error(f"Failed to delete vectors for doc {instance.id}: {e}")
             
-    # Delete from local filesystem media folder
     if instance.file:
         if os.path.isfile(instance.file.path):
             try:

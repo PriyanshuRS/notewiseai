@@ -47,7 +47,7 @@ export function DashboardSidebar({
         ))}
       </div>
 
-      {/* Nav Footer */}
+      {}
       <div className="p-3 border-t border-white/5 mt-auto bg-[#0A0A0A]">
         <div onClick={handleLogout} className="w-full flex items-center justify-between px-2 py-2 hover:bg-rose-500/10 rounded-md cursor-pointer group transition">
           <div className="flex items-center gap-3">

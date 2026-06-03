@@ -2,10 +2,6 @@ from typing import List, Dict
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 class TextChunker:
-    """
-    Splits page text into overlapping chunks using RecursiveCharacterTextSplitter
-    for better semantic boundaries.
-    """
     def __init__(self, chunk_size: int = 1000, overlap: int = 200):
         self.chunk_size = chunk_size
         self.overlap = overlap
